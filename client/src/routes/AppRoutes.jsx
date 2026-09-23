@@ -9,12 +9,15 @@ import ProtectedRoute from '../components/ProtectedRoute';
 export default function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
       <Route path="/not-authorized" element={<NotAuthorized />} />
+      <Route element={<ProtectedRoute allowedRoles={['admin', 'teacher', 'student', 'parent']} />}>
+        <Route path="/dashboard" element={<Home />} />
+      </Route>
       <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
         <Route path="/admin/*" element={<RoleDashboard role="admin" />} />
-        <Route path="/admin/register" element={<Register />} />
       </Route>
       <Route element={<ProtectedRoute allowedRoles={['teacher']} />}>
         <Route path="/teacher/*" element={<RoleDashboard role="teacher" />} />

@@ -36,7 +36,7 @@ Seed the first admin account after MongoDB is available:
 npm run seed --prefix server
 ```
 
-Authentication endpoints are available at `/api/auth/login`, `/api/auth/me`, and the admin-only `/api/auth/register`.
+Authentication endpoints are available at `/api/auth/login`, `/api/auth/me`, and `/api/auth/register`. Public registration creates teacher, student, or parent accounts; admin accounts are created through the seed script.
 
 The client uses `VITE_API_URL` when provided and otherwise targets `http://localhost:5050/api`.
 

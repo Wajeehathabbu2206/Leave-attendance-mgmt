@@ -26,7 +26,8 @@ export default function Register() {
     try {
       await api.post('/auth/register', form);
       setForm(initialForm);
-      setSuccess('Account created successfully.');
+      setSuccess('Account created successfully. Redirecting to sign in...');
+      setTimeout(() => navigate('/login'), 900);
     } catch (requestError) {
       setError(requestError.response?.data?.message || 'Unable to create account');
     } finally {
@@ -43,7 +44,7 @@ export default function Register() {
             <h1 className="mt-3 text-3xl font-bold text-slate-900">Create an account</h1>
             <p className="mt-2 text-slate-600">Add a teacher, student, or parent account.</p>
           </div>
-          <Link className="text-sm text-indigo-600 underline" to="/admin">Dashboard</Link>
+          <Link className="text-sm text-indigo-600 underline" to="/login">Sign in</Link>
         </div>
 
         <form className="mt-8" onSubmit={handleSubmit}>
@@ -79,9 +80,9 @@ export default function Register() {
           </button>
         </form>
 
-        <button className="mt-4 w-full text-sm text-slate-500 underline" onClick={() => navigate('/admin')} type="button">
-          Cancel
-        </button>
+        <p className="mt-6 text-center text-sm text-slate-600">
+          Already have an account? <Link className="font-semibold text-indigo-600 underline" to="/login">Sign in</Link>
+        </p>
       </section>
     </main>
   );

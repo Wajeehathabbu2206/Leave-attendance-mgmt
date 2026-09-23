@@ -11,7 +11,7 @@ export default function RoleDashboard({ role }) {
         <h1 className="mt-3 text-3xl font-bold text-slate-900">{role} dashboard</h1>
         <p className="mt-4 text-slate-600">Signed in as {user.name}.</p>
         {role === 'admin' && (
-          <Link className="mt-6 inline-block rounded-lg bg-indigo-600 px-4 py-2 font-semibold text-white" to="/admin/register">
+          <Link className="mt-6 inline-block rounded-lg bg-indigo-600 px-4 py-2 font-semibold text-white" to="/register">
             Create user account
           </Link>
         )}

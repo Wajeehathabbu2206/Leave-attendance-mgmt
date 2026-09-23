@@ -1,8 +1,6 @@
 import { useState } from 'react';
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-
-const rolePaths = { admin: '/admin', teacher: '/teacher', student: '/student', parent: '/parent' };
 
 export default function Login() {
   const { user, login } = useAuth();
@@ -13,7 +11,7 @@ export default function Login() {
   const [submitting, setSubmitting] = useState(false);
 
   if (user) {
-    return <Navigate to={rolePaths[user.role] || '/'} replace />;
+    return <Navigate to="/dashboard" replace />;
   }
 
   async function handleSubmit(event) {
@@ -22,8 +20,8 @@ export default function Login() {
     setSubmitting(true);
 
     try {
-      const loggedInUser = await login(form.email, form.password);
-      navigate(location.state?.from?.pathname || rolePaths[loggedInUser.role] || '/');
+      await login(form.email, form.password);
+      navigate(location.state?.from?.pathname || '/dashboard');
     } catch (requestError) {
       setError(requestError.response?.data?.message || 'Unable to log in');
     } finally {
@@ -48,6 +46,9 @@ export default function Login() {
         <button className="mt-6 w-full rounded-lg bg-indigo-600 px-4 py-2 font-semibold text-white disabled:opacity-50" disabled={submitting} type="submit">
           {submitting ? 'Signing in...' : 'Sign in'}
         </button>
+        <p className="mt-6 text-center text-sm text-slate-600">
+          Don&apos;t have an account? <Link className="font-semibold text-indigo-600 underline" to="/register">Register here</Link>
+        </p>
       </form>
     </main>
   );

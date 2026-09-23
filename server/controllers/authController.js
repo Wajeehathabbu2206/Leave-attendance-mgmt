@@ -2,6 +2,8 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 
+const selfRegistrationRoles = ['teacher', 'student', 'parent'];
+
 function publicUser(user) {
   return {
     id: user._id,
@@ -24,6 +26,10 @@ export async function register(req, res) {
 
     if (!name || !email || !password || !role) {
       return res.status(400).json({ message: 'Name, email, password, and role are required' });
+    }
+
+    if (!selfRegistrationRoles.includes(role)) {
+      return res.status(400).json({ message: 'Registration is available for teachers, students, and parents only' });
     }
 
     const existingUser = await User.findOne({ email: email.toLowerCase() });
