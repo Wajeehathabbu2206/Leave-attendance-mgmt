@@ -15,15 +15,27 @@ const seedAdmin = async () => {
     throw new Error('ADMIN_NAME, ADMIN_EMAIL, and ADMIN_PASSWORD must be configured');
   }
 
-  const existingAdmin = await User.findOne({ role: 'admin' });
-  if (existingAdmin) {
-    console.log('An admin account already exists');
+  const email = ADMIN_EMAIL.toLowerCase().trim();
+  const password = await bcrypt.hash(ADMIN_PASSWORD, 12);
+  const existingUser = await User.findOne({ email });
+
+  if (existingUser && existingUser.role !== 'admin') {
+    throw new Error(`The configured admin email belongs to a ${existingUser.role} account`);
+  }
+
+  const admin = existingUser || await User.findOne({ role: 'admin' });
+  if (admin) {
+    admin.name = ADMIN_NAME;
+    admin.email = email;
+    admin.password = password;
+    admin.role = 'admin';
+    await admin.save();
+    console.log(`Admin account synchronized for ${email}`);
     return;
   }
 
-  const password = await bcrypt.hash(ADMIN_PASSWORD, 12);
-  await User.create({ name: ADMIN_NAME, email: ADMIN_EMAIL, password, role: 'admin' });
-  console.log(`Admin account created for ${ADMIN_EMAIL}`);
+  await User.create({ name: ADMIN_NAME, email, password, role: 'admin' });
+  console.log(`Admin account created for ${email}`);
 };
 
 try {
