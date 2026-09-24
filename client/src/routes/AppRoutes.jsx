@@ -12,6 +12,9 @@ import Parents from '../pages/admin/Parents';
 import MarkAttendance from '../pages/teacher/MarkAttendance';
 import MyAttendance from '../pages/student/MyAttendance';
 import ChildAttendance from '../pages/parent/ChildAttendance';
+import LeaveRequest from '../pages/student/LeaveRequest';
+import LeaveRequests from '../pages/teacher/LeaveRequests';
+import LeaveRecords from '../pages/parent/LeaveRecords';
 
 export default function AppRoutes() {
   return (
@@ -33,12 +36,15 @@ export default function AppRoutes() {
       </Route>
       <Route element={<ProtectedRoute allowedRoles={['teacher']} />}>
         <Route path="/teacher/attendance" element={<MarkAttendance />} />
+        <Route path="/teacher/leave" element={<LeaveRequests />} />
       </Route>
       <Route element={<ProtectedRoute allowedRoles={['student']} />}>
         <Route path="/student/attendance" element={<MyAttendance />} />
+        <Route path="/student/leave" element={<LeaveRequest />} />
       </Route>
       <Route element={<ProtectedRoute allowedRoles={['parent']} />}>
         <Route path="/parent/attendance" element={<ChildAttendance />} />
+        <Route path="/parent/leave" element={<LeaveRecords />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
