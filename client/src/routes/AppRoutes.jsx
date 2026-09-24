@@ -5,6 +5,10 @@ import NotAuthorized from '../pages/NotAuthorized';
 import RoleDashboard from '../pages/RoleDashboard';
 import Register from '../pages/Register';
 import ProtectedRoute from '../components/ProtectedRoute';
+import AdminLayout from '../pages/admin/AdminLayout';
+import Classes from '../pages/admin/Classes';
+import Students from '../pages/admin/Students';
+import Parents from '../pages/admin/Parents';
 
 export default function AppRoutes() {
   return (
@@ -17,7 +21,12 @@ export default function AppRoutes() {
         <Route path="/dashboard" element={<Home />} />
       </Route>
       <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
-        <Route path="/admin/*" element={<RoleDashboard role="admin" />} />
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<Navigate to="classes" replace />} />
+          <Route path="classes" element={<Classes />} />
+          <Route path="students" element={<Students />} />
+          <Route path="parents" element={<Parents />} />
+        </Route>
       </Route>
       <Route element={<ProtectedRoute allowedRoles={['teacher']} />}>
         <Route path="/teacher/*" element={<RoleDashboard role="teacher" />} />
