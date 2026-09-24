@@ -15,6 +15,9 @@ export default function Home() {
         <HealthStatus />
         <div className="mt-6 flex justify-center gap-4">
           {user.role === 'admin' && <Link className="rounded-lg bg-indigo-600 px-4 py-2 font-semibold text-white" to="/admin">Admin area</Link>}
+          {user.role === 'teacher' && <Link className="rounded-lg bg-indigo-600 px-4 py-2 font-semibold text-white" to="/teacher/attendance">Mark attendance</Link>}
+          {user.role === 'student' && <Link className="rounded-lg bg-indigo-600 px-4 py-2 font-semibold text-white" to="/student/attendance">My attendance</Link>}
+          {user.role === 'parent' && <Link className="rounded-lg bg-indigo-600 px-4 py-2 font-semibold text-white" to="/parent/attendance">Child attendance</Link>}
           <button className="rounded-lg border border-slate-300 px-4 py-2 text-slate-700" onClick={logout} type="button">Sign out</button>
         </div>
       </section>

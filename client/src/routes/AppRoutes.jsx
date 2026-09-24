@@ -9,6 +9,9 @@ import AdminLayout from '../pages/admin/AdminLayout';
 import Classes from '../pages/admin/Classes';
 import Students from '../pages/admin/Students';
 import Parents from '../pages/admin/Parents';
+import MarkAttendance from '../pages/teacher/MarkAttendance';
+import MyAttendance from '../pages/student/MyAttendance';
+import ChildAttendance from '../pages/parent/ChildAttendance';
 
 export default function AppRoutes() {
   return (
@@ -29,13 +32,13 @@ export default function AppRoutes() {
         </Route>
       </Route>
       <Route element={<ProtectedRoute allowedRoles={['teacher']} />}>
-        <Route path="/teacher/*" element={<RoleDashboard role="teacher" />} />
+        <Route path="/teacher/attendance" element={<MarkAttendance />} />
       </Route>
       <Route element={<ProtectedRoute allowedRoles={['student']} />}>
-        <Route path="/student/*" element={<RoleDashboard role="student" />} />
+        <Route path="/student/attendance" element={<MyAttendance />} />
       </Route>
       <Route element={<ProtectedRoute allowedRoles={['parent']} />}>
-        <Route path="/parent/*" element={<RoleDashboard role="parent" />} />
+        <Route path="/parent/attendance" element={<ChildAttendance />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
