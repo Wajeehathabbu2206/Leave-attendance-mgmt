@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-import Home from '../pages/Home';
+import DashboardHome from '../pages/DashboardHome';
 import Login from '../pages/Login';
 import NotAuthorized from '../pages/NotAuthorized';
 import RoleDashboard from '../pages/RoleDashboard';
@@ -17,6 +17,10 @@ import LeaveRequests from '../pages/teacher/LeaveRequests';
 import LeaveRecords from '../pages/parent/LeaveRecords';
 import StudentLeaveDashboard from '../pages/student/LeaveDashboard';
 import ParentLeaveDashboard from '../pages/parent/LeaveDashboard';
+import AdminDashboard from '../pages/admin/Dashboard';
+import TeacherDashboard from '../pages/teacher/Dashboard';
+import AttendanceReport from '../pages/teacher/AttendanceReport';
+import PageLayout from '../components/PageLayout';
 
 export default function AppRoutes() {
   return (
@@ -26,9 +30,10 @@ export default function AppRoutes() {
       <Route path="/register" element={<Register />} />
       <Route path="/not-authorized" element={<NotAuthorized />} />
       <Route element={<ProtectedRoute allowedRoles={['admin', 'teacher', 'student', 'parent']} />}>
-        <Route path="/dashboard" element={<Home />} />
+        <Route path="/dashboard" element={<DashboardHome />} />
       </Route>
       <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<Navigate to="classes" replace />} />
           <Route path="classes" element={<Classes />} />
@@ -37,16 +42,18 @@ export default function AppRoutes() {
         </Route>
       </Route>
       <Route element={<ProtectedRoute allowedRoles={['teacher']} />}>
-        <Route path="/teacher/attendance" element={<MarkAttendance />} />
-        <Route path="/teacher/leave" element={<LeaveRequests />} />
+        <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
+        <Route path="/teacher/attendance" element={<PageLayout><MarkAttendance /></PageLayout>} />
+        <Route path="/teacher/leave" element={<PageLayout><LeaveRequests /></PageLayout>} />
+        <Route path="/teacher/reports/attendance" element={<AttendanceReport />} />
       </Route>
       <Route element={<ProtectedRoute allowedRoles={['student']} />}>
-        <Route path="/student/attendance" element={<MyAttendance />} />
-        <Route path="/student/leave" element={<StudentLeaveDashboard />} />
+        <Route path="/student/attendance" element={<PageLayout><MyAttendance /></PageLayout>} />
+        <Route path="/student/leave" element={<PageLayout><StudentLeaveDashboard /></PageLayout>} />
       </Route>
       <Route element={<ProtectedRoute allowedRoles={['parent']} />}>
-        <Route path="/parent/attendance" element={<ChildAttendance />} />
-        <Route path="/parent/leave" element={<ParentLeaveDashboard />} />
+        <Route path="/parent/attendance" element={<PageLayout><ChildAttendance /></PageLayout>} />
+        <Route path="/parent/leave" element={<PageLayout><ParentLeaveDashboard /></PageLayout>} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
