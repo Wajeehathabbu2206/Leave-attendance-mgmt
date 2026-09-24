@@ -30,26 +30,34 @@ export default function Login() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-100 px-6">
-      <form onSubmit={handleSubmit} className="w-full max-w-md rounded-2xl bg-white p-8 shadow-xl shadow-slate-200">
-        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-indigo-600">MarkMyDay</p>
-        <h1 className="mt-3 text-3xl font-bold text-slate-900">Sign in</h1>
-        <label className="mt-6 block text-sm font-medium text-slate-700">
+    <main className="flex min-h-screen items-center justify-center bg-[#F2F7FB] px-6 py-10">
+      <section className="grid w-full max-w-4xl overflow-hidden rounded-xl border border-[#D6E4F0] bg-white shadow-[0_20px_50px_rgba(11,31,58,0.12)] md:grid-cols-[0.9fr_1.1fr]">
+        <div className="hidden bg-[#0B1F3A] p-10 text-white md:flex md:flex-col md:justify-between">
+          <div><div className="flex items-center gap-3"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#14B8A6] text-lg font-bold text-[#0B1F3A]">M</span><span className="text-xl font-medium">MarkMyDay</span></div><p className="mt-16 text-3xl font-medium leading-tight">A clearer day for every classroom.</p><p className="mt-4 max-w-xs text-sm leading-6 text-[#9FB6D0]">Attendance, leave, and school operations in one calm workspace.</p></div>
+          <p className="text-xs text-[#7FA0C2]">School operations platform</p>
+        </div>
+        <form onSubmit={handleSubmit} className="p-8 sm:p-10">
+          <div className="mb-8 md:hidden"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#14B8A6] text-lg font-bold text-[#0B1F3A]">M</span><p className="mt-3 text-sm font-semibold uppercase tracking-[0.2em] text-[#2563EB]">MarkMyDay</p></div>
+          <p className="text-sm font-semibold text-[#2563EB]">Welcome back</p>
+          <h1 className="mt-2 text-3xl font-medium text-[#0B1F3A]">Sign in to your workspace</h1>
+          <p className="mt-2 text-sm text-[#5B7590]">Use your school account to continue.</p>
+          <label className="mt-7 block text-sm font-semibold text-[#0B1F3A]">
           Email
-          <input className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2" type="email" required value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} />
+          <input className="field mt-2" type="email" autoComplete="email" placeholder="you@school.edu" required value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} />
         </label>
-        <label className="mt-4 block text-sm font-medium text-slate-700">
+        <label className="mt-5 block text-sm font-semibold text-[#0B1F3A]">
           Password
-          <input className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2" type="password" required value={form.password} onChange={(event) => setForm({ ...form, password: event.target.value })} />
+          <input className="field mt-2" type="password" autoComplete="current-password" placeholder="Enter your password" required value={form.password} onChange={(event) => setForm({ ...form, password: event.target.value })} />
         </label>
-        {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
-        <button className="mt-6 w-full rounded-lg bg-indigo-600 px-4 py-2 font-semibold text-white disabled:opacity-50" disabled={submitting} type="submit">
+        {error && <p className="error-message">{error}</p>}
+        <button className="button-primary mt-7 w-full" disabled={submitting} type="submit">
           {submitting ? 'Signing in...' : 'Sign in'}
         </button>
-        <p className="mt-6 text-center text-sm text-slate-600">
-          Don&apos;t have an account? <Link className="font-semibold text-indigo-600 underline" to="/register">Register here</Link>
+        <p className="mt-7 text-center text-sm text-[#5B7590]">
+          Don&apos;t have an account? <Link className="font-semibold text-[#2563EB] hover:underline" to="/register">Create one</Link>
         </p>
-      </form>
+        </form>
+      </section>
     </main>
   );
 }
