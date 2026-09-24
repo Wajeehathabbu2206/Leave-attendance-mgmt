@@ -59,8 +59,8 @@ export async function saveAttendance(req, res) {
 
     const operations = records.map(({ studentId, status, remarks }) => ({
       updateOne: {
-        filter: { studentId, date },
-        update: { $set: { classSectionId, status, remarks, markedBy: req.user.userId } },
+        filter: { studentId, date, periodNumber: null },
+        update: { $set: { classSectionId, periodNumber: null, status, remarks, markedBy: req.user.userId } },
         upsert: true,
       },
     }));
@@ -77,7 +77,7 @@ export async function getTeacherAttendance(req, res) {
     if (!validDate(date)) return response(res, 400, 'A valid date in YYYY-MM-DD format is required');
     if (!(await getTeacherClass(classSectionId, req.user.userId))) return response(res, 403, 'You can only view attendance for your assigned classes');
     const students = await Student.find({ classSectionId }).populate('userId', 'name').sort({ rollNo: 1 });
-    const records = await Attendance.find({ classSectionId, date }).select('studentId status remarks');
+    const records = await Attendance.find({ classSectionId, date, periodNumber: null }).select('studentId status remarks');
     const byStudent = new Map(records.map((record) => [record.studentId.toString(), record]));
     const roster = students.map((student) => ({ studentId: student._id, name: student.userId?.name, rollNo: student.rollNo, status: byStudent.get(student._id.toString())?.status || 'unmarked', remarks: byStudent.get(student._id.toString())?.remarks || '' }));
     return response(res, 200, 'Attendance loaded', roster);
@@ -89,7 +89,7 @@ export async function getTeacherAttendance(req, res) {
 async function getAttendanceForStudent(studentId, month, year) {
   const period = periodFilter(month, year);
   if (!validId(studentId) || !period) return null;
-  const records = await Attendance.find({ studentId, date: { $regex: `^${period.year}-${period.month}-` } }).sort({ date: 1 }).select('date status');
+  const records = await Attendance.find({ studentId, periodNumber: null, date: { $regex: `^${period.year}-${period.month}-` } }).sort({ date: 1 }).select('date status');
   return attendanceSummary(records);
 }
 
@@ -127,4 +127,33 @@ export async function getParentAttendance(req, res) {
   } catch (error) {
     return response(res, 500, 'Unable to load attendance', error.message);
   }
+}
+
+function daysInMonth(month, year) {
+  const total = new Date(year, month, 0).getDate();
+  return Array.from({ length: total }, (_, index) => `${year}-${String(month).padStart(2, '0')}-${String(index + 1).padStart(2, '0')}`);
+}
+
+export async function getStudentAttendanceCalendar(req, res) {
+  try {
+    const monthNumber = Number(req.query.month); const yearNumber = Number(req.query.year);
+    const student = req.query.studentId ? await Student.findById(req.query.studentId) : await Student.findOne({ userId: req.user.userId });
+    if (!student || student.userId.toString() !== req.user.userId) return response(res, 403, 'You can only view your own attendance calendar');
+    if (!Number.isInteger(monthNumber) || monthNumber < 1 || monthNumber > 12 || !Number.isInteger(yearNumber) || yearNumber < 2000 || yearNumber > 2100) return response(res, 400, 'Valid month (1-12) and year are required');
+    const records = await Attendance.find({ studentId: student._id, periodNumber: null, date: { $regex: `^${yearNumber}-${String(monthNumber).padStart(2, '0')}-` } }).select('date status');
+    const byDate = new Map(records.map((record) => [record.date, record.status]));
+    return response(res, 200, 'Attendance calendar loaded', { month: monthNumber, year: yearNumber, days: daysInMonth(monthNumber, yearNumber).map((date) => ({ date, status: byDate.get(date) || 'unmarked' })) });
+  } catch (error) { return response(res, 500, 'Unable to load attendance calendar', error.message); }
+}
+
+export async function savePeriodAttendance(req, res) {
+  try {
+    const { classSectionId, date, periodNumber, records } = req.body;
+    if (!classSectionId || !validDate(date) || !Number.isInteger(periodNumber) || periodNumber < 1 || !Array.isArray(records)) return response(res, 400, 'classSectionId, date, periodNumber, and records are required');
+    if (!(await getTeacherClass(classSectionId, req.user.userId))) return response(res, 403, 'You can only mark attendance for your assigned classes');
+    const students = await Student.find({ classSectionId }).select('_id'); const ids = new Set(students.map((student) => student._id.toString()));
+    if (records.some((record) => !validId(record.studentId) || !ids.has(record.studentId) || !['present', 'absent', 'late', 'leave'].includes(record.status))) return response(res, 400, 'Every period record must belong to the selected class and use a valid status');
+    await Attendance.bulkWrite(records.map(({ studentId, status }) => ({ updateOne: { filter: { studentId, date, periodNumber }, update: { $set: { classSectionId, periodNumber, status, markedBy: req.user.userId } }, upsert: true } })));
+    return response(res, 200, 'Period attendance saved', { updated: records.length });
+  } catch (error) { return response(res, 500, 'Unable to save period attendance', error.message); }
 }

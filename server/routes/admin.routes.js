@@ -12,6 +12,7 @@ import {
 } from '../controllers/admin.controller.js';
 import { setLeaveBalances } from '../controllers/leaveBalance.controller.js';
 import { adminDashboard } from '../controllers/dashboard.controller.js';
+import { createTimetable, listAdminTimetable } from '../controllers/timetable.controller.js';
 
 const router = Router();
 router.use(authenticate, authorize('admin'));
@@ -25,5 +26,7 @@ router.get('/students', listStudents);
 router.post('/parents', createParent);
 router.post('/leave-balance/set', setLeaveBalances);
 router.get('/dashboard', adminDashboard);
+router.post('/timetable', createTimetable);
+router.get('/timetable', listAdminTimetable);
 
 export default router;

@@ -119,12 +119,12 @@ export async function reviewLeave(req, res) {
 
       const dates = datesBetween(leave.fromDate, leave.toDate);
       if (status === 'approved') {
-        const existing = await Attendance.find({ studentId: leave.studentId, date: { $in: dates } }).select('date status').session(session);
+        const existing = await Attendance.find({ studentId: leave.studentId, periodNumber: null, date: { $in: dates } }).select('date status').session(session);
         const existingByDate = new Map(existing.map((record) => [record.date, record.status]));
-        const operations = dates.filter((date) => existingByDate.get(date) !== 'present').map((date) => ({ updateOne: { filter: { studentId: leave.studentId, date }, update: { $set: { classSectionId: leave.classSectionId, status: 'leave', markedBy: req.user.userId } }, upsert: true } }));
+        const operations = dates.filter((date) => existingByDate.get(date) !== 'present').map((date) => ({ updateOne: { filter: { studentId: leave.studentId, date, periodNumber: null }, update: { $set: { classSectionId: leave.classSectionId, periodNumber: null, status: 'leave', markedBy: req.user.userId } }, upsert: true } }));
         if (operations.length) await Attendance.bulkWrite(operations, { session });
       } else if (previousStatus === 'approved') {
-        await Attendance.deleteMany({ studentId: leave.studentId, date: { $in: dates }, status: 'leave' }, { session });
+        await Attendance.deleteMany({ studentId: leave.studentId, periodNumber: null, date: { $in: dates }, status: 'leave' }, { session });
       }
     });
     return response(res, 200, `Leave request ${status}`, leave);
