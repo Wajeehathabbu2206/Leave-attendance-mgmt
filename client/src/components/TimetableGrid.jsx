@@ -1,0 +1,7 @@
+const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+export default function TimetableGrid({ timetable = [], onPeriodClick }) {
+  const byDay = Object.fromEntries(timetable.map((day) => [day.dayOfWeek, day.periods]));
+  const periodNumbers = [...new Set(timetable.flatMap((day) => day.periods.map((period) => period.periodNumber)))].sort((a, b) => a - b);
+  return <div className="panel overflow-x-auto"><table className="data-table min-w-[760px]"><thead><tr><th>Period</th>{days.map((day) => <th key={day}>{day}</th>)}</tr></thead><tbody>{periodNumbers.map((periodNumber) => <tr key={periodNumber}><td className="font-semibold">{periodNumber}</td>{days.map((day) => { const period = byDay[day]?.find((item) => item.periodNumber === periodNumber); return <td key={day}>{period ? <button className="w-full rounded-lg border border-[#D6E4F0] bg-[#F8FBFE] p-2 text-left transition hover:border-[#14B8A6] hover:bg-[#E6F8F5]" onClick={() => onPeriodClick?.({ ...period, dayOfWeek: day })} type="button"><p className="font-semibold text-[#0B1F3A]">{period.subjectId?.name || 'Subject'}</p><p className="mt-1 text-xs text-[#5B7590]">{period.teacherId?.name || 'Teacher'}</p></button> : <span className="text-[#C5D8E9]">-</span>}</td>; })}</tr>)}</tbody></table>{!periodNumbers.length && <p className="py-8 text-center text-sm text-[#5B7590]">No timetable has been configured.</p>}</div>;
+}

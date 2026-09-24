@@ -157,3 +157,14 @@ export async function savePeriodAttendance(req, res) {
     return response(res, 200, 'Period attendance saved', { updated: records.length });
   } catch (error) { return response(res, 500, 'Unable to save period attendance', error.message); }
 }
+
+export async function getStudentPeriodAttendance(req, res) {
+  try {
+    const { date, periodNumber } = req.query;
+    const student = await Student.findOne({ userId: req.user.userId }).select('_id');
+    if (!student) return response(res, 404, 'Student profile not found');
+    if (!validDate(date) || !Number.isInteger(Number(periodNumber)) || Number(periodNumber) < 1) return response(res, 400, 'A valid date and periodNumber are required');
+    const record = await Attendance.findOne({ studentId: student._id, date, periodNumber: Number(periodNumber) }).select('date periodNumber status remarks');
+    return response(res, 200, 'Period attendance loaded', record || { date, periodNumber: Number(periodNumber), status: 'unmarked' });
+  } catch (error) { return response(res, 500, 'Unable to load period attendance', error.message); }
+}

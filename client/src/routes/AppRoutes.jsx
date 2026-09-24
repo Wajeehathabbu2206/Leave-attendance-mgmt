@@ -21,6 +21,9 @@ import AdminDashboard from '../pages/admin/Dashboard';
 import TeacherDashboard from '../pages/teacher/Dashboard';
 import AttendanceReport from '../pages/teacher/AttendanceReport';
 import PageLayout from '../components/PageLayout';
+import AttendanceCalendarPage from '../pages/student/AttendanceCalendarPage';
+import StudentTimetablePage from '../pages/student/TimetablePage';
+import TeacherTimetablePage from '../pages/teacher/TimetablePage';
 
 export default function AppRoutes() {
   return (
@@ -44,11 +47,14 @@ export default function AppRoutes() {
       <Route element={<ProtectedRoute allowedRoles={['teacher']} />}>
         <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
         <Route path="/teacher/attendance" element={<PageLayout><MarkAttendance /></PageLayout>} />
+        <Route path="/teacher/timetable" element={<TeacherTimetablePage />} />
         <Route path="/teacher/leave" element={<PageLayout><LeaveRequests /></PageLayout>} />
         <Route path="/teacher/reports/attendance" element={<AttendanceReport />} />
       </Route>
       <Route element={<ProtectedRoute allowedRoles={['student']} />}>
         <Route path="/student/attendance" element={<PageLayout><MyAttendance /></PageLayout>} />
+        <Route path="/student/attendance/calendar" element={<AttendanceCalendarPage />} />
+        <Route path="/student/timetable" element={<StudentTimetablePage />} />
         <Route path="/student/leave" element={<PageLayout><StudentLeaveDashboard /></PageLayout>} />
       </Route>
       <Route element={<ProtectedRoute allowedRoles={['parent']} />}>

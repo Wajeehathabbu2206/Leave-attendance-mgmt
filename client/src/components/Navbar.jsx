@@ -3,8 +3,8 @@ import { useAuth } from '../context/AuthContext';
 
 const links = {
   admin: [['/admin/dashboard', 'Overview'], ['/admin/classes', 'Classes'], ['/admin/students', 'Students'], ['/admin/parents', 'Parents']],
-  teacher: [['/dashboard', 'Overview'], ['/teacher/attendance', 'Attendance'], ['/teacher/leave', 'Leave'], ['/teacher/reports/attendance', 'Reports']],
-  student: [['/dashboard', 'Overview'], ['/student/attendance', 'Attendance'], ['/student/leave', 'Leave']],
+  teacher: [['/dashboard', 'Overview'], ['/teacher/attendance', 'Attendance'], ['/teacher/timetable', 'Timetable'], ['/teacher/leave', 'Leave'], ['/teacher/reports/attendance', 'Reports']],
+  student: [['/dashboard', 'Overview'], ['/student/attendance', 'Attendance'], ['/student/timetable', 'Timetable'], ['/student/leave', 'Leave']],
   parent: [['/dashboard', 'Overview'], ['/parent/attendance', 'Attendance'], ['/parent/leave', 'Leave']],
 };
 
