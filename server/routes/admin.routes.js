@@ -10,6 +10,7 @@ import {
   listTeachers,
   updateClass,
 } from '../controllers/admin.controller.js';
+import { setLeaveBalances } from '../controllers/leaveBalance.controller.js';
 
 const router = Router();
 router.use(authenticate, authorize('admin'));
@@ -21,5 +22,6 @@ router.post('/teachers', createTeacher);
 router.post('/students', createStudent);
 router.get('/students', listStudents);
 router.post('/parents', createParent);
+router.post('/leave-balance/set', setLeaveBalances);
 
 export default router;
