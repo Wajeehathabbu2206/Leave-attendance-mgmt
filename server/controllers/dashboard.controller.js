@@ -31,7 +31,7 @@ export async function teacherDashboard(req, res) {
     const date = today();
     const [totalStudents, records, pendingLeaveRequests] = await Promise.all([
       Student.countDocuments({ classSectionId: classSection._id }),
-      Attendance.find({ classSectionId: classSection._id, date }).select('status'),
+      Attendance.find({ classSectionId: classSection._id, date, periodNumber: null }).select('status'),
       LeaveRequest.countDocuments({ classSectionId: classSection._id, status: 'pending' }),
     ]);
     const attendanceSummary = { present: 0, absent: 0, late: 0, leave: 0 };
@@ -45,15 +45,18 @@ export async function teacherDashboard(req, res) {
 export async function adminDashboard(req, res) {
   try {
     const date = today();
-    const [totalStudents, totalTeachers, records, pendingLeaveRequests] = await Promise.all([
+    const [totalStudents, totalTeachers, totalClasses, records, pendingLeaveRequests] = await Promise.all([
       Student.countDocuments(),
       User.countDocuments({ role: 'teacher' }),
-      Attendance.find({ date }).select('status'),
+      ClassSection.countDocuments(),
+      Attendance.find({ date, periodNumber: null }).select('status'),
       LeaveRequest.countDocuments({ status: 'pending' }),
     ]);
     const totalMarked = records.length;
     const attended = records.filter((record) => record.status === 'present' || record.status === 'late').length;
-    return response(res, 200, 'Admin dashboard loaded', { totalStudents, totalTeachers, overallAttendancePercentage: totalMarked ? Number(((attended / totalMarked) * 100).toFixed(2)) : 0, pendingLeaveRequests });
+    const attendanceSummary = { present: 0, absent: 0, late: 0, leave: 0 };
+    records.forEach((record) => { if (attendanceSummary[record.status] !== undefined) attendanceSummary[record.status] += 1; });
+    return response(res, 200, 'Admin dashboard loaded', { totalStudents, totalTeachers, totalClasses, totalMarked, attendanceSummary, overallAttendancePercentage: totalMarked ? Number(((attended / totalMarked) * 100).toFixed(2)) : 0, pendingLeaveRequests });
   } catch (error) {
     return response(res, 500, 'Unable to load admin dashboard', error.message);
   }
