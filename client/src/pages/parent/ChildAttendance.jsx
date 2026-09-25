@@ -1,11 +1,81 @@
-import { useEffect, useState } from 'react';
-import { AttendanceView } from '../student/MyAttendance';
-import api from '../../services/api';
+import { useEffect, useState } from "react";
+import { AttendanceView } from "../student/MyAttendance";
+import api from "../../services/api";
 
 export default function ChildAttendance() {
-  const date = new Date(); const [children, setChildren] = useState([]); const [studentId, setStudentId] = useState(''); const [month, setMonth] = useState(date.getMonth() + 1); const [year, setYear] = useState(date.getFullYear()); const [data, setData] = useState({ records: [], percentage: 0 }); const [loading, setLoading] = useState(true); const [error, setError] = useState('');
-  useEffect(() => { api.get('/parent/children').then(({ data: response }) => { setChildren(response.data); setStudentId(response.data[0]?._id || ''); }).catch((err) => setError(err.response?.data?.message || 'Unable to load children')).finally(() => setLoading(false)); }, []);
-  useEffect(() => { if (!studentId) return; setLoading(true); api.get('/parent/attendance', { params: { studentId, month, year } }).then(({ data: response }) => setData(response.data)).catch((err) => setError(err.response?.data?.message || 'Unable to load attendance')).finally(() => setLoading(false)); }, [studentId, month, year]);
-  const child = children.find((item) => item._id === studentId); const rows = data.records.map((record) => ({ ...record, studentId: record.date, rollNo: record.date, name: record.date }));
-  return <section><div className="mb-6"><h2 className="page-title">Child attendance</h2><p className="page-subtitle">Review attendance for a linked child.</p></div><div className="panel mb-6"><label className="text-sm font-semibold text-slate-700">Child<select className="field mt-2 max-w-md" onChange={(event) => setStudentId(event.target.value)} value={studentId}><option value="">Select child</option>{children.map((item) => <option key={item._id} value={item._id}>{item.userId?.name} ({item.classSectionId?.grade}-{item.classSectionId?.section})</option>)}</select></label></div><AttendanceView data={data} error={error} loading={loading} month={month} onMonthChange={setMonth} onYearChange={setYear} rows={rows} title={child ? `${child.userId?.name}'s attendance` : 'Attendance'} year={year} /></section>;
+  const date = new Date();
+  const [children, setChildren] = useState([]);
+  const [studentId, setStudentId] = useState("");
+  const [month, setMonth] = useState(date.getMonth() + 1);
+  const [year, setYear] = useState(date.getFullYear());
+  const [data, setData] = useState({ records: [], percentage: 0 });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  useEffect(() => {
+    api
+      .get("/parent/children")
+      .then(({ data: response }) => {
+        setChildren(response.data);
+        setStudentId(response.data[0]?._id || "");
+      })
+      .catch((err) =>
+        setError(err.response?.data?.message || "Unable to load children"),
+      )
+      .finally(() => setLoading(false));
+  }, []);
+  useEffect(() => {
+    if (!studentId) return;
+    setLoading(true);
+    api
+      .get("/parent/attendance", { params: { studentId, month, year } })
+      .then(({ data: response }) => setData(response.data))
+      .catch((err) =>
+        setError(err.response?.data?.message || "Unable to load attendance"),
+      )
+      .finally(() => setLoading(false));
+  }, [studentId, month, year]);
+  const child = children.find((item) => item._id === studentId);
+  const rows = data.records.map((record) => ({
+    ...record,
+    studentId: record.date,
+    rollNo: record.date,
+    name: record.date,
+  }));
+  return (
+    <section>
+      <div className="mb-6">
+        <h2 className="page-title">Child attendance</h2>
+        <p className="page-subtitle">Review attendance for a linked child.</p>
+      </div>
+      <div className="panel mb-6">
+        <label className="text-sm font-semibold text-slate-700">
+          Child
+          <select
+            className="field mt-2 max-w-md"
+            onChange={(event) => setStudentId(event.target.value)}
+            value={studentId}
+          >
+            <option value="">Select child</option>
+            {children.map((item) => (
+              <option key={item._id} value={item._id}>
+                {item.userId?.name} ({item.classSectionId?.grade}-
+                {item.classSectionId?.section})
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+      <AttendanceView
+        data={data}
+        error={error}
+        loading={loading}
+        month={month}
+        onMonthChange={setMonth}
+        onYearChange={setYear}
+        rows={rows}
+        title={child ? `${child.userId?.name}'s attendance` : "Attendance"}
+        year={year}
+      />
+    </section>
+  );
 }

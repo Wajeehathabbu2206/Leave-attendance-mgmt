@@ -1,3 +1,16 @@
 export default function LeaveBalanceCard({ balance }) {
-  return <article className="panel"><p className="text-sm font-semibold capitalize text-slate-500">{balance.leaveType} leave</p><p className="mt-2 text-3xl font-bold text-slate-900">{balance.remaining}</p><p className="mt-1 text-sm text-slate-500">remaining of {balance.totalAllotted} days</p><p className="mt-3 text-xs text-slate-400">{balance.used} used</p></article>;
+  return (
+    <article className="panel">
+      <p className="text-sm font-semibold capitalize text-slate-500">
+        {balance.leaveType} leave
+      </p>
+      <p className="mt-2 text-3xl font-bold text-slate-900">
+        {balance.remaining}
+      </p>
+      <p className="mt-1 text-sm text-slate-500">
+        remaining of {balance.totalAllotted} days
+      </p>
+      <p className="mt-3 text-xs text-slate-400">{balance.used} used</p>
+    </article>
+  );
 }

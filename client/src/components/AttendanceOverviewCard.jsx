@@ -1,8 +1,83 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
-export default function AttendanceOverviewCard({ attendance, title, detailsPath, summary }) {
-  const percentage = Math.min(Math.max(Number(attendance?.percentage) || 0, 0), 100);
+export default function AttendanceOverviewCard({
+  attendance,
+  title,
+  detailsPath,
+  summary,
+}) {
+  const percentage = Math.min(
+    Math.max(Number(attendance?.percentage) || 0, 0),
+    100,
+  );
   const radius = 44;
   const circumference = 2 * Math.PI * radius;
-  return <section className="panel p-5 sm:p-6"><div className="flex flex-col gap-5 sm:flex-row sm:items-center"><div className="relative h-28 w-28 shrink-0"><svg className="h-full w-full -rotate-90" viewBox="0 0 104 104" role="img" aria-label={`Monthly attendance ${percentage}%`}><circle cx="52" cy="52" fill="none" r={radius} stroke="#E1ECF5" strokeWidth="10" /><circle cx="52" cy="52" fill="none" r={radius} stroke="#14B8A6" strokeDasharray={`${(percentage / 100) * circumference} ${circumference}`} strokeLinecap="round" strokeWidth="10" /></svg><div className="absolute inset-0 flex flex-col items-center justify-center"><span className="text-2xl font-medium text-[#2563EB]">{percentage}%</span></div></div><div className="min-w-0 flex-1"><div className="mb-4 flex items-start justify-between gap-4"><div><p className="text-xs text-[#5B7590]">{title}</p><p className="mt-1 text-lg font-medium text-[#0B1F3A]">{percentage >= 90 ? 'Great progress this month' : 'Keep building your momentum'}</p></div><Link className="button-secondary shrink-0" to={detailsPath}>View details</Link></div>{summary && <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">{summary.map((item) => <div className="rounded-lg border border-[#E1ECF5] bg-[#F6FAFD] px-3 py-2" key={item.label}><p className="text-xs text-[#5B7590]">{item.label}</p><p className={`mt-1 text-lg font-medium ${item.color}`}>{item.value}</p></div>)}</div>}</div></div></section>;
+  return (
+    <section className="panel p-5 sm:p-6">
+      <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
+        <div className="relative h-28 w-28 shrink-0">
+          <svg
+            className="h-full w-full -rotate-90"
+            viewBox="0 0 104 104"
+            role="img"
+            aria-label={`Monthly attendance ${percentage}%`}
+          >
+            <circle
+              cx="52"
+              cy="52"
+              fill="none"
+              r={radius}
+              stroke="#E1ECF5"
+              strokeWidth="10"
+            />
+            <circle
+              cx="52"
+              cy="52"
+              fill="none"
+              r={radius}
+              stroke="#14B8A6"
+              strokeDasharray={`${(percentage / 100) * circumference} ${circumference}`}
+              strokeLinecap="round"
+              strokeWidth="10"
+            />
+          </svg>
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <span className="text-2xl font-medium text-[#2563EB]">
+              {percentage}%
+            </span>
+          </div>
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="mb-4 flex items-start justify-between gap-4">
+            <div>
+              <p className="text-xs text-[#5B7590]">{title}</p>
+              <p className="mt-1 text-lg font-medium text-[#0B1F3A]">
+                {percentage >= 90
+                  ? "Great progress this month"
+                  : "Keep building your momentum"}
+              </p>
+            </div>
+            <Link className="button-secondary shrink-0" to={detailsPath}>
+              View details
+            </Link>
+          </div>
+          {summary && (
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+              {summary.map((item) => (
+                <div
+                  className="rounded-lg border border-[#E1ECF5] bg-[#F6FAFD] px-3 py-2"
+                  key={item.label}
+                >
+                  <p className="text-xs text-[#5B7590]">{item.label}</p>
+                  <p className={`mt-1 text-lg font-medium ${item.color}`}>
+                    {item.value}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
 }

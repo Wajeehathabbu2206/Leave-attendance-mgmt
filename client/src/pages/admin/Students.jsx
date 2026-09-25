@@ -1,12 +1,86 @@
-import { useEffect, useState } from 'react';
-import api from '../../services/api';
-import StudentForm from '../../components/StudentForm';
+import { useEffect, useState } from "react";
+import api from "../../services/api";
+import StudentForm from "../../components/StudentForm";
 
 export default function Students() {
-  const [students, setStudents] = useState([]); const [classes, setClasses] = useState([]); const [message, setMessage] = useState(''); const [error, setError] = useState(''); const [busy, setBusy] = useState(false);
-  async function load() { const [studentsResponse, classesResponse] = await Promise.all([api.get('/admin/students'), api.get('/admin/classes')]); setStudents(studentsResponse.data.data); setClasses(classesResponse.data.data); }
-  useEffect(() => { load().catch((err) => setError(err.response?.data?.message || 'Unable to load students')); }, []);
-  async function createStudent(form) { setBusy(true); setMessage(''); setError(''); try { const { data } = await api.post('/admin/students', form); setStudents([...students, data.data]); setMessage(data.message); } catch (err) { setError(err.response?.data?.message || 'Unable to create student'); } finally { setBusy(false); } }
-  const groups = students.reduce((result, student) => { const key = student.classSectionId?._id || 'unknown'; (result[key] ||= { className: student.classSectionId ? `${student.classSectionId.grade} - ${student.classSectionId.section}` : 'Unknown', students: [] }).students.push(student); return result; }, {});
-  return <section><div className="mb-6"><h2 className="page-title">Students</h2><p className="page-subtitle">Onboard students into their assigned class section.</p></div><div className="panel"><StudentForm busy={busy} classes={classes} onSubmit={createStudent} /></div>{message && <p className="success-message">{message}</p>}{error && <p className="error-message">{error}</p>}{Object.values(groups).map((group) => <div className="panel mt-6 overflow-x-auto" key={group.className}><h3 className="mb-4 text-lg font-bold">{group.className}</h3><table className="data-table"><thead><tr><th>Name</th><th>Roll number</th><th>Class</th></tr></thead><tbody>{group.students.map((student) => <tr key={student._id}><td>{student.userId?.name}</td><td>{student.rollNo}</td><td>{group.className}</td></tr>)}</tbody></table></div>)}</section>;
+  const [students, setStudents] = useState([]);
+  const [classes, setClasses] = useState([]);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+  async function load() {
+    const [studentsResponse, classesResponse] = await Promise.all([
+      api.get("/admin/students"),
+      api.get("/admin/classes"),
+    ]);
+    setStudents(studentsResponse.data.data);
+    setClasses(classesResponse.data.data);
+  }
+  useEffect(() => {
+    load().catch((err) =>
+      setError(err.response?.data?.message || "Unable to load students"),
+    );
+  }, []);
+  async function createStudent(form) {
+    setBusy(true);
+    setMessage("");
+    setError("");
+    try {
+      const { data } = await api.post("/admin/students", form);
+      setStudents([...students, data.data]);
+      setMessage(data.message);
+    } catch (err) {
+      setError(err.response?.data?.message || "Unable to create student");
+    } finally {
+      setBusy(false);
+    }
+  }
+  const groups = students.reduce((result, student) => {
+    const key = student.classSectionId?._id || "unknown";
+    (result[key] ||= {
+      className: student.classSectionId
+        ? `${student.classSectionId.grade} - ${student.classSectionId.section}`
+        : "Unknown",
+      students: [],
+    }).students.push(student);
+    return result;
+  }, {});
+  return (
+    <section>
+      <div className="mb-6">
+        <h2 className="page-title">Students</h2>
+        <p className="page-subtitle">
+          Onboard students into their assigned class section.
+        </p>
+      </div>
+      <div className="panel">
+        <StudentForm busy={busy} classes={classes} onSubmit={createStudent} />
+      </div>
+      {message && <p className="success-message">{message}</p>}
+      {error && <p className="error-message">{error}</p>}
+      {Object.values(groups).map((group) => (
+        <div className="panel mt-6 overflow-x-auto" key={group.className}>
+          <h3 className="mb-4 text-lg font-bold">{group.className}</h3>
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Roll number</th>
+                <th>Class</th>
+              </tr>
+            </thead>
+            <tbody>
+              {group.students.map((student) => (
+                <tr key={student._id}>
+                  <td>{student.userId?.name}</td>
+                  <td>{student.rollNo}</td>
+                  <td>{group.className}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ))}
+    </section>
+  );
 }
