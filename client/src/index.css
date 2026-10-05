@@ -12,6 +12,70 @@ body {
   margin: 0;
 }
 
+/* A focused indigo and teal palette for parent and student leave views. */
+.leave-dashboard {
+  --leave-ink: #18324b;
+  --leave-muted: #647d92;
+  --leave-border: #d5e4ec;
+  --leave-surface: #ffffff;
+  --leave-soft: #f0f8f8;
+  --leave-accent: #087e8b;
+}
+
+.leave-dashboard .page-title,
+.leave-dashboard h3 {
+  color: var(--leave-ink);
+}
+
+.leave-dashboard .page-subtitle,
+.leave-dashboard label,
+.leave-dashboard .text-slate-500,
+.leave-dashboard .text-slate-400 {
+  color: var(--leave-muted);
+}
+
+.leave-dashboard .panel {
+  border-color: var(--leave-border);
+  background-color: var(--leave-surface);
+  box-shadow: 0 5px 18px rgb(24 50 75 / 7%);
+}
+
+.leave-dashboard .field {
+  border-color: #c5dce3;
+  background-color: #f7fbfc;
+}
+
+.leave-dashboard .field:focus {
+  border-color: var(--leave-accent);
+  --tw-ring-color: #ccebed;
+}
+
+.leave-dashboard .button-primary {
+  background-color: var(--leave-accent);
+}
+
+.leave-dashboard .button-primary:hover {
+  background-color: #076b76;
+}
+
+.leave-dashboard .data-table th {
+  border-color: var(--leave-border);
+  color: var(--leave-muted);
+}
+
+.leave-dashboard .data-table tbody tr:nth-child(even) {
+  background-color: #f6fafb;
+}
+
+.leave-dashboard .data-table tbody tr:hover {
+  background-color: var(--leave-soft);
+}
+
+.leave-dashboard .data-table td {
+  border-color: #e4edf1;
+  color: var(--leave-ink);
+}
+
 @layer components {
   .field { @apply w-full rounded-lg border border-[#C5D8E9] bg-[#F8FBFE] px-3 py-2.5 text-sm text-[#0B1F3A] outline-none focus:border-[#2563EB] focus:ring-2 focus:ring-[#DBE7FD]; }
   .button-primary { @apply rounded-lg bg-[#2563EB] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-60; }

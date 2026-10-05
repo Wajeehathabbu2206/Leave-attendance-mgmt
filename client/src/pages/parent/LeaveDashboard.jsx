@@ -41,7 +41,7 @@ export default function LeaveDashboard() {
       .finally(() => setLoading(false));
   }, [studentId]);
   return (
-    <section>
+    <section className="leave-dashboard">
       <div className="mb-6">
         <h2 className="page-title">Child leave dashboard</h2>
         <p className="page-subtitle">

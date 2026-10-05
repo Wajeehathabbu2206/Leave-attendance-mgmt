@@ -39,7 +39,7 @@ export default function LeaveDashboard() {
     }
   }
   return (
-    <section>
+    <section className="leave-dashboard">
       <div className="mb-6">
         <h2 className="page-title">Leave dashboard</h2>
         <p className="page-subtitle">
